@@ -1,0 +1,46 @@
+{
+    "name": "tech.blog",
+    "version": "1.0.0",
+    "description": "[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon server.js",
+        "seed": "node seeds/seed.js",
+        "lint": "eslint .",
+        "web": "Develop/server.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/EduardoPinedaH/Tech-Blog.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/EduardoPinedaH/Tech-Blog/issues"
+    },
+    "homepage": "https://github.com/EduardoPinedaH/Tech-Blog#readme",
+    "dependencies": {
+        "@fortawesome/fontawesome-free": "^6.4.0",
+        "bcrypt": "^5.1.0",
+        "connect-session-sequelize": "^7.1.7",
+        "dayjs": "^1.11.8",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "express-handlebars": "^7.0.7",
+        "express-session": "^1.17.3",
+        "express-sessions": "^1.0.6",
+        "handlebars": "^4.7.7",
+        "multer": "^1.4.5-lts.1",
+        "mysql2": "^3.3.5",
+        "nodemon": "^2.0.22",
+        "sequelize": "^6.32.1",
+        "sql": "^0.78.0"
+    },
+    "devDependencies": {
+        "eslint": "^8.43.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-plugin-import": "^2.27.5"
+    }
+}
