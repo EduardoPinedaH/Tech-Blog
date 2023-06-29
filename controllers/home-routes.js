@@ -1,48 +1,46 @@
 const router = require('express').Router();
 const sequelize = require('../config/connection');
 const {
-    Post,
     User,
+    Post,
     Comment
 } = require('../models');
-const withAuth = require('../utils/auth');
 
-router.get('/', withAuth, (req, res) => {
+
+router.get('/', (req, res) => {
     Post.findAll({
-            where: {
-                user_id: req.session.user_id
-            },
             attributes: ['id', 'title', 'content', 'created_at'],
             include: [{
-                model: Comment,
-                attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
-                include: {
+                    model: Comment,
+                    attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+                    include: {
+                        model: User,
+                        attributes: ['username']
+                    }
+                },
+                {
                     model: User,
                     attributes: ['username']
                 }
-            }, 
-            {
-                model: User,
-                attributes: ['username']
-            }
-        ]
-    })
-    .then(dbPostData => {
-        const posts = dbPostData.map(post => post.get({
-            plain: true
-        }));
-        res.render('dashboard', {
-            posts,
-            loggedIn: true
+            ]
+        })
+        .then(dbPostData => {
+            const posts = dbPostData.map(post => post.get({
+                plain: true
+            }));
+
+            res.render('homepage', {
+                posts,
+                loggedIn: req.session.loggedIn
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
         });
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-    });
 });
 
-router.get('/edit/:id', withAuth, (req, res) => {
+router.get('/post/:id', (req, res) => {
     Post.findOne({
             where: {
                 id: req.params.id
@@ -74,21 +72,39 @@ router.get('/edit/:id', withAuth, (req, res) => {
                 plain: true
             });
 
-            res.render('edit-post', {
+            res.render('single-post', {
                 post,
-                loggedIn: true
+                loggedIn: req.session.loggedIn
             });
         })
         .catch(err => {
             console.log(err);
             res.status(500).json(err);
         });
+});
+
+router.get('/login', (req, res) => {
+    if (req.session.loggedIn) {
+        res.redirect('/');
+        return;
+    }
+
+    res.render('login');
+});
+
+router.get('/signup', (req, res) => {
+    if (req.session.loggedIn) {
+        res.redirect('/');
+        return;
+    }
+
+    res.render('signup');
+});
+
+
+router.get('*', (req, res) => {
+    res.status(400).send("Can't go there!");
 })
 
-router.get('/new', (req, res) => {
-    res.render('add-post', {
-        loggedIn: true
-    })
-})
 
 module.exports = router;
