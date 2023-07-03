@@ -9,7 +9,12 @@ const {
 
 router.get('/', (req, res) => {
     Post.findAll({
-            attributes: ['id', 'title', 'content', 'created_at'],
+            attributes: [
+                'id',
+                'title',
+                'content',
+                'created_at'
+            ],
             include: [{
                     model: Comment,
                     attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
@@ -45,7 +50,12 @@ router.get('/post/:id', (req, res) => {
             where: {
                 id: req.params.id
             },
-            attributes: ['id', 'title', 'content', 'created_at'],
+            attributes: [
+                'id',
+                'title',
+                'content',
+                'created_at'
+            ],
             include: [{
                     model: Comment,
                     attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
@@ -62,7 +72,7 @@ router.get('/post/:id', (req, res) => {
         })
         .then(dbPostData => {
             if (!dbPostData) {
-                res.status(400).json({
+                res.status(404).json({
                     message: 'No post found'
                 });
                 return;
@@ -103,7 +113,7 @@ router.get('/signup', (req, res) => {
 
 
 router.get('*', (req, res) => {
-    res.status(400).send("Can't go there!");
+    res.status(404).send("Can't go there!");
 })
 
 

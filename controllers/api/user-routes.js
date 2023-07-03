@@ -19,42 +19,42 @@ router.get('/', (req, res) => {
         });
 });
 
-// Get one user 
+// Get user
 router.get('/:id', (req, res) => {
     User.findOne({
             attributes: {
-                exclude: [password]
+                exclude: ['password']
             },
             where: {
                 id: req.params.id
             },
             include: [{
-                model: Post,
-                attributes: ['id', 'title', 'content', 'created_at']
-            },
-            {
-                model: Comment,
-                attributes: ['id', 'comment_text', 'created_at'],
-                include: {
                     model: Post,
-                    attributes: ['title']
+                    attributes: ['id', 'title', 'content', 'created_at']
+                },
+                {
+                    model: Comment,
+                    attributes: ['id', 'comment_text', 'created_at'],
+                    include: {
+                        model: Post,
+                        attributes: ['title']
+                    }
                 }
+            ]
+        })
+        .then(dbUserData => {
+            if (!dbUserData) {
+                res.status(404).json({
+                    message: 'No user found'
+                });
+                return;
             }
-        ]
-    })
-    .then(dbUserData => {
-        if(!dbUserData) {
-            res.status(400).json({
-                message: 'No user found'
-            });
-            return;
-        }
-        res.json(dbUserData)
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-    });
+            res.json(dbUserData);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
 });
 
 // Create user
@@ -87,7 +87,7 @@ router.post('/login', (req, res) => {
         .then(dbUserData => {
             if (!dbUserData) {
                 res.status(400).json({
-                    message: 'No user found with that username!'
+                    message: 'No user found!'
                 });
                 return;
             }
@@ -123,6 +123,17 @@ router.post('/login', (req, res) => {
                 });
             });
         });
+});
+
+router.post('/logout', (req, res) => {
+    if (req.session.loggedIn) {
+        req.session.destroy(() => {
+            res.status(204).end();
+        });
+    } else {
+        res.status(404).end();
+    }
+
 });
 
 module.exports = router;
